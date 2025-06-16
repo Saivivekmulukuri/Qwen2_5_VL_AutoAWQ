@@ -94,7 +94,7 @@ calib_data = load_docvqa_calibration_data(num_samples=64)
 # Quantize with custom calibration data
 print("Starting quantization with DocVQA calibration data...")
 
-model.quantize(tokenizer, quant_config=quant_config, calib_data=calib_data)
+model.quantize(tokenizer, quant_config=quant_config, calib_data=calib_data)#, n_parallel_calib_samples=4, max_calib_samples=64)
 
 model.save_quantized(quant_path)
 tokenizer.save_pretrained(quant_path)
