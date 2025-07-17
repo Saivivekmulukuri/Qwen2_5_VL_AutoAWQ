@@ -1,3 +1,9 @@
 documents
 Qwen2_5-VL-3B-Instruct-awq
 sparse_logs
+PII_Finetuning/*outputs*
+PII_Finetuning/PII_train_dataset
+PII_Finetuning/wandb
+PII_Finetuning/unsloth_compiled_cache
+PII_Finetuning/*.txt.vscode/settings.json
+__pycache__/

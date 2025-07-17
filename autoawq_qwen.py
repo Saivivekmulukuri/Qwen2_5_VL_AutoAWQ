@@ -23,8 +23,8 @@ def load_docvqa_calibration_data(num_samples=64):
     # Your correct loading approach
     # ds = load_dataset("llms-lab/DocVQA", "DocVQA", split="test")
     dataset_options = [
-        ("nielsr/docvqa_1200_examples", None),
         ("lmms-lab/DocVQA", "DocVQA"),
+        ("nielsr/docvqa_1200_examples", None),
         ("HuggingFaceM4/VQAv2", None),  # Fallback
         ("lmms-lab/ChartQA", None),     # Another fallback
     ]
@@ -48,8 +48,8 @@ def load_docvqa_calibration_data(num_samples=64):
         return None
     ds = ds.shuffle(seed=42).select(range(num_samples))
     
-    calibration_texts = []
-    
+    calibration_inputs = []
+
     for example in ds:
         try:
             # Convert image to base64 format
@@ -77,15 +77,24 @@ def load_docvqa_calibration_data(num_samples=64):
             text = processor.apply_chat_template(
                 messages, tokenize=False, add_generation_prompt=True
             )
-            
-            calibration_texts.append(text)
-            
+            image_inputs, video_inputs = process_vision_info(messages)
+            inputs = processor(
+                text=text,
+                images=image_inputs,
+                return_tensors="pt",
+                padding=True,
+                truncation=True,
+                max_length=512,
+            )
+            # calibration_texts.append(text)
+            calibration_inputs.append(inputs['input_ids'][0].tolist())
         except Exception as e:
             print(f"Error processing sample: {e}")
             continue
     
-    print(f"Loaded {len(calibration_texts)} calibration samples from DocVQA")
-    return calibration_texts
+    print(f"Loaded {len(calibration_inputs)} calibration samples from DocVQA")
+    # return calibration_texts
+    return calibration_inputs
 
 # Load DocVQA calibration data
 print("Loading DocVQA calibration dataset...")
